@@ -52,6 +52,8 @@ class Report extends Component {
             header,
             footer
         }
+        console.log(report);
+        
         this.setState({
             report
         })

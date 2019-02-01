@@ -2,13 +2,13 @@ import ActionsCreators from './../actionsCreators'
 
 import { put } from 'redux-saga/effects'
 
-import axios from 'axios'
+import api from './../../services/api'
 
 export function* getReport(action) {
 
     try {
         const reportId = action.report;
-        const data = yield axios.get('https://infinite-basin-82984.herokuapp.com/reports/' + reportId)
+        const data = yield api.get('reports/' + reportId)
 
         yield put(ActionsCreators.getReportSuccess(data.data))
 
@@ -19,7 +19,7 @@ export function* getReport(action) {
 
 export function* getReports() {
     try {
-        const data = yield axios.get('https://infinite-basin-82984.herokuapp.com/reports')
+        const data = yield api.get('reports')
         yield put(ActionsCreators.getReportsSuccess(data.data.reports))
     } catch (err) {
         yield put(ActionsCreators.getReportsFailure())
@@ -31,7 +31,7 @@ export function* createReport(action) {
     let report = action.report;
 
     try {
-        const data = yield axios.post('https://infinite-basin-82984.herokuapp.com/reports', report)
+        const data = yield api.post('reports', report)
         yield put(ActionsCreators.createReportSuccess(data.data))
     } catch (err) {
         yield put(ActionsCreators.createReportFailure())
@@ -45,7 +45,7 @@ export function* updateReport(action) {
 
         let report = action.report;
 
-        const data = yield axios.put('https://infinite-basin-82984.herokuapp.com/reports/' + reportId, report)
+        const data = yield api.put('reports/' + reportId, report)
 
         yield put(ActionsCreators.updateReportSuccess(data.data))
 
@@ -59,7 +59,7 @@ export function* generateReport(action) {
 
         let report = action.report;
 
-        const data = yield axios.post('https://infinite-basin-82984.herokuapp.com/reports/report/generate', report, {
+        const data = yield api.post('reports/report/generate', report, {
             responseType: 'arraybuffer',
             headers: {
                 'Accept': 'application/pdf'
@@ -67,9 +67,9 @@ export function* generateReport(action) {
         })
 
         const file = new Blob([data.data], { type: 'application/pdf' });
-        
+
         const fileURL = URL.createObjectURL(file);
-        
+
         yield put(ActionsCreators.generateReportSuccess(fileURL))
 
     } catch (err) {
